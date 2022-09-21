@@ -10,6 +10,5 @@ async def chat_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.lower()
     if text.__contains__('hi') or text.__contains__('hello') or text.__contains__('hey'):
         response = 'Hello'
-        print(context)
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
