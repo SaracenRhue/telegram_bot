@@ -3,16 +3,51 @@ from telegram.ext import *
 from os import system as cmd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import pyautogui as bot
 from time import sleep
 import yaml
+
+## toggle gaming vm
+def toggle_vm():
+    TOWER = 'http://192.168.178.132'
+
+    with open('data.yml', 'r') as file:
+        data = yaml.safe_load(file)
+        USER = data['toweruser']
+        PASS = data['towerpassword']
+
+    driver = webdriver.Firefox()
+    driver.get(TOWER)
+    sleep(1)
+
+    # login
+    driver.find_elements(by=By.TAG_NAME, value='input')[0].send_keys(USER)
+    driver.find_elements(by=By.TAG_NAME, value='input')[1].send_keys(PASS)
+    driver.find_elements(by=By.TAG_NAME, value='button')[0].click()
+    #switch to virtual machines
+    driver.get(TOWER+'/VMs')
+    sleep(1)
+    # open vm dropdown
+    vm_icon = driver.find_elements(by=By.TAG_NAME, value='img')[3]
+    vm_icon.click()
+    sleep(1)
+    # toggle vm
+    toggle_icon = driver.find_elements(by=By.TAG_NAME, value='li')[6]
+    toggle_icon.click()
+    # close browser
+    driver.close()
+    cmd('pkill firefox')
+
+########################################################
+
 
 
 # get metadata for stash from hqporner
 def tag_hqporner():
-    with open('auth.yml', 'r') as file:
-        auth = yaml.safe_load(file)
-        USER = auth['username']
-        PASS = auth['password']
+    with open('data.yml', 'r') as file:
+        data = yaml.safe_load(file)
+        USER = data['username']
+        PASS = data['password']
 
     stash_url = "http://192.168.178.132:3069/scenes?c={%22type%22:%22url%22,%22value%22:%22%22,%22modifier%22:%22IS_NULL%22}&c={%22type%22:%22studios%22,%22value%22:{%22items%22:[{%22id%22:%2239%22,%22label%22:%22HQPorner%22}],%22depth%22:0},%22modifier%22:%22INCLUDES%22}&disp=1&perPage=1&sortby=created_at&sortdir=desc"
     site_url = "https://hqporner.com/?q="
@@ -30,9 +65,6 @@ def tag_hqporner():
         file_name = file_name.replace(" ", "+")
         return site_url + file_name
 
-
-
-
     driver = webdriver.Firefox()
     driver.get(stash_url)
     sleep(1)
@@ -47,7 +79,6 @@ def tag_hqporner():
     title = driver.find_element(By.CLASS_NAME, value="meta-data-title")
     video_url = title.find_element(By.TAG_NAME, value="a").get_attribute("href")
     sleep(0.5)
-    #video_url = driver.current_url
     driver.get(stash_url)
     sleep(1)
     video_cards = driver.find_elements(by=By.TAG_NAME, value="td")
@@ -71,11 +102,12 @@ def tag_hqporner():
 ##################################################################
 
 
+
 # get a random video url from stash
 def random_stash_video():
     stash_url = 'http://192.168.178.132:3069/scenes?disp=1&perPage=1&sortby=random&sortdir=desc'
 
-    with open('auth.yml', 'r') as file:
+    with open('data.yml', 'r') as file:
         auth = yaml.safe_load(file)
         USER = auth['username']
         PASS = auth['password']
@@ -104,3 +136,16 @@ def random_stash_video():
     cmd('pkill firefox')
 
     return str(video_url)
+
+###################################################
+
+
+# execute shell command
+def use_shell(command):
+    with open('data.yml', 'r') as file:
+        data = yaml.safe_load(file)
+        path = data['paths']['tower']
+    response = cmd(f"cd {path} && {command}")
+    response = str(response)
+    response = response.replace('0', 'done')
+

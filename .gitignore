@@ -1,5 +1,4 @@
 __pycache__
 geckodriver.log
-auth.yml
+data.yml
 trial.py
-history.txt

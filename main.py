@@ -6,7 +6,7 @@ from tower_response import *
 from chat_responses import *
 import yaml
 
-with open('auth.yml', 'r') as file:
+with open('data.yml', 'r') as file:
     auth = yaml.safe_load(file)
     TOKEN = auth['token']
 
@@ -19,8 +19,12 @@ logging.basicConfig(
 
 application = ApplicationBuilder().token(TOKEN).build()
 
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Ok I'm working on it")
+    
+
 # handle slash commands
-# application.add_handler(CommandHandler('start', start))
+application.add_handler(CommandHandler('start', start))
 
 
 # main bot function

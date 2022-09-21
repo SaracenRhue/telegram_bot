@@ -1,9 +1,0 @@
-bot:
-  name: "Edith"
-chat: 
-  greetings:
-  goodbyes:
-  universal:
-tasks:
-  tower:
-  slash:
