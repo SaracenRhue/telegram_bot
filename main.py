@@ -2,11 +2,13 @@ import logging
 from telegram import Update
 from telegram.ext import *
 from os import system as cmd
-from slash_cmds import *
-from tower_cmds import *
+from tower_response import *
 from chat_responses import *
+import yaml
 
-TOKEN = '5741907853:AAH4pPGe8khEWgMiGgs1Xy0pBKMuB7unzzE'
+with open('auth.yml', 'r') as file:
+    auth = yaml.safe_load(file)
+    TOKEN = auth['token']
 
 
 logging.basicConfig(
@@ -18,14 +20,17 @@ logging.basicConfig(
 application = ApplicationBuilder().token(TOKEN).build()
 
 # handle slash commands
-start_handler = CommandHandler('start', start)
-application.add_handler(start_handler)
+# application.add_handler(CommandHandler('start', start))
 
 
 # main bot function
 async def bot_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
-   await tower_response(update, context)
-   await chat_response(update, context)
+    if await tower_response(update, context):
+        return True
+    else:
+        await chat_response(update, context)
+
+    
 
 
 

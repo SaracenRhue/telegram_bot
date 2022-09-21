@@ -1,3 +1,9 @@
 bot:
-  name: Edith
-chat:
+  name: "Edith"
+chat: 
+  greetings:
+  goodbyes:
+  universal:
+tasks:
+  tower:
+  slash:
