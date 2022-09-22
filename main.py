@@ -1,9 +1,9 @@
 import logging
 from telegram import Update
 from telegram.ext import *
-from os import system as cmd
 from tower_response import *
 from chat_responses import *
+from slash_actions import *
 import yaml
 
 with open('data.yml', 'r') as file:
@@ -16,17 +16,8 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-
 application = ApplicationBuilder().token(TOKEN).build()
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="Ok I'm working on it")
     
-
-# handle slash commands
-application.add_handler(CommandHandler('start', start))
-
-
 # main bot function
 async def bot_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await tower_response(update, context):
@@ -34,10 +25,19 @@ async def bot_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await chat_response(update, context)
 
-    
 
 
+# handle slash commands
+# generate handler for each command from config.yml (slash)
+with open('config.yml', 'r') as file:
+    config = yaml.safe_load(file)
+    slash = config['slash']
+    for i in slash:
+        trigger = slash[i]['trigger']
+        function = eval(slash[i]['function']) # convert string to function name
+        application.add_handler(CommandHandler(trigger, function))
 
-
+# handle normal messages
 application.add_handler(MessageHandler(filters.TEXT, bot_response))
+# start the bot
 application.run_polling()

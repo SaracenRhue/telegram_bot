@@ -3,7 +3,6 @@ from telegram.ext import *
 from os import system as cmd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import pyautogui as bot
 from time import sleep
 import yaml
 
@@ -131,9 +130,6 @@ def random_stash_video():
         link = link.get_attribute("href")
         if link.__contains__("/scene/"):
             video_url = link
-    
-    driver.close()
-    cmd('pkill firefox')
 
     return str(video_url)
 
@@ -141,11 +137,73 @@ def random_stash_video():
 
 
 # execute shell command
-def use_shell(command):
+def use_tower_shell(command):
+    TOWER = 'http://192.168.178.132'
     with open('data.yml', 'r') as file:
         data = yaml.safe_load(file)
-        path = data['paths']['tower']
-    response = cmd(f"cd {path} && {command}")
-    response = str(response)
-    response = response.replace('0', 'done')
+        USER = data['toweruser']
+        PASS = data['towerpassword']
+        PATH = data['paths']['tower']
+    driver = webdriver.Firefox()
+    driver.get(TOWER)
+    # login
+    driver.find_elements(by=By.TAG_NAME, value='input')[0].send_keys(USER)
+    driver.find_elements(by=By.TAG_NAME, value='input')[1].send_keys(PASS)
+    driver.find_elements(by=By.TAG_NAME, value='button')[0].click()
+    #switch to terminal
+    driver.get(TOWER+'/webterminal/ttyd/')
+    sleep(1)
+    terminal = driver.find_element(by=By.TAG_NAME, value='textarea')
+    terminal.send_keys('cd '+PATH)
+    terminal.send_keys('\n')
+    terminal.send_keys(command)
+    terminal.send_keys('\n')
+
+    driver.close()
+    cmd('pkill firefox')
+
+###################################################
+
+
+# reinstall code-server 
+def reinst_code():
+    TOWER = 'http://192.168.178.132'
+    with open('data.yml', 'r') as file:
+        data = yaml.safe_load(file)
+        USER = data['toweruser']
+        PASS = data['towerpassword']
+        PATH = data['paths']['tower']
+    driver = webdriver.Firefox()
+    driver.get(TOWER)
+    # login
+    driver.find_elements(by=By.TAG_NAME, value='input')[0].send_keys(USER)
+    driver.find_elements(by=By.TAG_NAME, value='input')[1].send_keys(PASS)
+    driver.find_elements(by=By.TAG_NAME, value='button')[0].click()
+    #switch to terminal
+    driver.get(TOWER+'/logterminal/code-server/')
+    sleep(1)
+    terminal = driver.find_element(by=By.TAG_NAME, value='textarea')
+    terminal.send_keys('bash -c "$(curl -fsSL https://raw.githubusercontent.com/SaracenRhue/unraidScripts/main/codeserver.sh)"')
+    terminal.send_keys('\n')
+
+    driver.close()
+    cmd('pkill firefox')
+
+
+
+
+
+
+
+
+# with open('data.yml', 'r') as file:
+#     data = yaml.safe_load(file)
+#     containers = data['containers']
+#     for i in range(len(containers)):
+#         containers[i] = containers[i].lower()
+#         containers[i] = containers[i].replace(' ', '_')
+#         containers[i] = containers[i].replace('-ce', '')
+#         containers[i] = containers[i].replace('-binhex', '')
+
+# print(containers)
 

@@ -1,0 +1,10 @@
+slash:
+  0:
+    trigger: start
+    function: start
+  1:
+    trigger: vsc
+    function: reinst_code
+  2:
+    trigger: vm
+    function: toggle_vm
