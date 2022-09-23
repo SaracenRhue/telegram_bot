@@ -1,7 +1,7 @@
 import logging
 from telegram import Update
 from telegram.ext import *
-from tower_response import *
+from keyword_response import *
 from chat_responses import *
 from slash_actions import *
 import yaml
@@ -20,7 +20,7 @@ application = ApplicationBuilder().token(TOKEN).build()
     
 # main bot function
 async def bot_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if await tower_response(update, context):
+    if await keyword_response(update, context):
         return True
     else:
         await chat_response(update, context)

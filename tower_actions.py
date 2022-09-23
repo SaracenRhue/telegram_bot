@@ -130,6 +130,8 @@ def random_stash_video():
         link = link.get_attribute("href")
         if link.__contains__("/scene/"):
             video_url = link
+    driver.close()
+    cmd('pkill firefox')
 
     return str(video_url)
 
@@ -158,7 +160,7 @@ def use_tower_shell(command):
     terminal.send_keys('\n')
     terminal.send_keys(command)
     terminal.send_keys('\n')
-
+    sleep(5)
     driver.close()
     cmd('pkill firefox')
 
@@ -186,24 +188,5 @@ def reinst_code():
     terminal.send_keys('bash -c "$(curl -fsSL https://raw.githubusercontent.com/SaracenRhue/unraidScripts/main/codeserver.sh)"')
     terminal.send_keys('\n')
 
-    driver.close()
-    cmd('pkill firefox')
 
-
-
-
-
-
-
-
-# with open('data.yml', 'r') as file:
-#     data = yaml.safe_load(file)
-#     containers = data['containers']
-#     for i in range(len(containers)):
-#         containers[i] = containers[i].lower()
-#         containers[i] = containers[i].replace(' ', '_')
-#         containers[i] = containers[i].replace('-ce', '')
-#         containers[i] = containers[i].replace('-binhex', '')
-
-# print(containers)
 

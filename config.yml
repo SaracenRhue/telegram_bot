@@ -8,3 +8,25 @@ slash:
   2:
     trigger: vm
     function: toggle_vm
+
+messages:
+  0:
+    trigger: 
+      - $
+    function: use_tower_shell(text)
+  1:
+    trigger: 
+      - vm 
+      - start
+      - toggle
+    function: toggle_vm()
+  2:
+    trigger: 
+      - tag
+      - hqporner
+    function: tag_hqporner()
+  3:
+    trigger:
+     - porn
+    function: random_stash_video()
+
