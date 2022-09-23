@@ -25,7 +25,7 @@ async def keyword_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_text(random_stash_video(), update, context)
         await send_text('all right, have fun :)', update, context)
 
-    wrap_tag_hqporner_exists = False
+    
 
 ####################################################################################################        
 # if no wrap_ function excists, random_working_text() and random_done_text() will be used by default
